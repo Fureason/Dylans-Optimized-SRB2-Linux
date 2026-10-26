@@ -1,4 +1,4 @@
-
+# SRB2-data Debian package control file.
 
 Source: ${PACKAGE_NAME}-data
 Section: games

@@ -52,7 +52,7 @@ else {
 	$zig = Join-Path $zigRoot 'zig.exe'
 }
 $make = 'C:\ProgramData\SRB2TC64\bin\mingw32-make.exe'
-$objcopy = Join-Path $env:LOCALAPPDATA 'Android\Sdk\ndk\28.0.12433566\toolchains\llvm\prebuilt\windows-x86_64\bin\llvm-objcopy.exe'
+$objcopy = Join-Path $env:USERPROFILE 'AppData\Local\Android\Sdk\ndk\28.0.12433566\toolchains\llvm\prebuilt\windows-x86_64\bin\llvm-objcopy.exe'
 $llvmBin = Split-Path -Parent $objcopy
 $lld = Join-Path $llvmBin 'ld.lld.exe'
 $nm = Join-Path $llvmBin 'llvm-nm.exe'
@@ -95,10 +95,10 @@ $makeArgs = @(
 	'-C', 'src', '-j4',
 	'LINUX64=1', 'X86_64=1', 'SDL=1', 'WINDOWSHELL=1',
 	'NOGME=1', 'NOOPENMPT=1', 'RELAXWARNINGS=1', 'NOLDWARNING=1',
-	'EXENAME=srb2-v5.104-linux-x86_64',
-	'DBGNAME=srb2-v5.104-linux-x86_64.debug',
-	'makedir=../make-linux-v5104-glibc217',
-	'bin=../bin-linux-v5104-glibc217',
+	'EXENAME=srb2-v5.108-linux-x86_64',
+	'DBGNAME=srb2-v5.108-linux-x86_64.debug',
+	'makedir=../make-linux-v5108-glibc217',
+	'bin=../bin-linux-v5108-glibc217',
 	"CC=$zigCommand cc -target x86_64-linux-gnu",
 	"OBJCOPY=$($objcopy.Replace('\', '/'))",
 	'CFLAGS=-Wno-error=date-time',
@@ -124,16 +124,16 @@ try {
 		throw "Linux compilation failed with exit code $LASTEXITCODE"
 	}
 
-	$objectRoot = Join-Path $sourceRoot 'make-linux-v5104-glibc217\objs'
-	$compatRoot = Join-Path $sourceRoot 'make-linux-v5104-glibc217\compat'
+	$objectRoot = Join-Path $sourceRoot 'make-linux-v5108-glibc217\objs'
+	$compatRoot = Join-Path $sourceRoot 'make-linux-v5108-glibc217\compat'
 	$compatBlua = Join-Path $compatRoot 'blua'
 	if (-not (Test-Path -LiteralPath $compatBlua)) {
 		New-Item -ItemType Directory -Path $compatBlua | Out-Null
 	}
 
 	$compatObjects = @{
-		'make-linux-v5104-glibc217/objs/blua/lcode.o' = 'make-linux-v5104-glibc217/compat/blua/lcode.o'
-		'make-linux-v5104-glibc217/objs/blua/lvm.o' = 'make-linux-v5104-glibc217/compat/blua/lvm.o'
+		'make-linux-v5108-glibc217/objs/blua/lcode.o' = 'make-linux-v5108-glibc217/compat/blua/lcode.o'
+		'make-linux-v5108-glibc217/objs/blua/lvm.o' = 'make-linux-v5108-glibc217/compat/blua/lvm.o'
 	}
 	foreach ($entry in $compatObjects.GetEnumerator()) {
 		$inputPath = Join-Path $sourceRoot ($entry.Key.Replace('/', '\'))
@@ -165,7 +165,11 @@ try {
 			if ($compatObjects.ContainsKey($relative)) { $compatObjects[$relative] } else { $relative }
 		}
 
-	$compatDebug = 'bin-linux-v5104-glibc217/srb2-v5.104-linux-x86_64.debug217'
+	$binRoot = Join-Path $sourceRoot 'bin-linux-v5108-glibc217'
+	if (-not (Test-Path -LiteralPath $binRoot)) {
+		New-Item -ItemType Directory -Path $binRoot | Out-Null
+	}
+	$compatDebug = 'bin-linux-v5108-glibc217/srb2-v5.108-linux-x86_64.debug217'
 	$linkArgs = @(
 		'-m', 'elf_x86_64',
 		'--dynamic-linker=/lib64/ld-linux-x86-64.so.2',
@@ -177,7 +181,7 @@ try {
 		'-o', $compatDebug,
 		'linux-build/glibc217/crt1.o'
 	) + $objects + @(
-		'make-linux-v5104-glibc217/compat/libpng-glibc217.a',
+		'make-linux-v5108-glibc217/compat/libpng-glibc217.a',
 		'linux-build/miniupnpc/libminiupnpc.a',
 		'linux-build/zlib/libz.a',
 		'linux-build/link/libcurl.so.4.8.0',
@@ -225,9 +229,9 @@ try {
 		throw 'Linux executable unexpectedly requires pow from glibc 2.29'
 	}
 
-	$binRoot = Join-Path $sourceRoot 'bin-linux-v5104-glibc217'
-	$debugName = 'srb2-v5.104-linux-x86_64.debug'
-	$releaseName = 'srb2-v5.104-linux-x86_64'
+	$binRoot = Join-Path $sourceRoot 'bin-linux-v5108-glibc217'
+	$debugName = 'srb2-v5.108-linux-x86_64.debug'
+	$releaseName = 'srb2-v5.108-linux-x86_64'
 	Move-Item -LiteralPath (Join-Path $sourceRoot $compatDebug) -Destination (Join-Path $binRoot $debugName) -Force
 	& $objcopy '--strip-debug' (Join-Path $binRoot $debugName) (Join-Path $binRoot $releaseName)
 	if ($LASTEXITCODE -ne 0) {
@@ -245,7 +249,7 @@ try {
 		Pop-Location
 	}
 
-	Write-Host "Linux V5.104 build completed in $binRoot"
+	Write-Host "Linux V5.108 build completed in $binRoot"
 }
 finally {
 	Pop-Location
