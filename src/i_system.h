@@ -44,10 +44,10 @@ size_t I_GetFreeMem(size_t *total);
 
 /** Report a slow operation when platform diagnostics support it. */
 void I_ReportHitch(const char *operation, precise_t started, UINT32 threshold_ms);
+void I_SetCrashContext(const char *context);
 
 #if defined(_WIN32) && !defined(DEDICATED)
 /** Store the last high-level operation for the Windows crash-context report. */
-void I_SetCrashContext(const char *context);
 /** Remember the most recently loaded add-on for the crash-context report. */
 void I_SetCrashAddonContext(const char *filename);
 /** Keep a small in-memory timeline for the next crash report. */
@@ -61,6 +61,12 @@ void I_ReportFrameHitch(precise_t started, precise_t finished);
 /** Record what can and cannot be inferred when a remote player leaves. */
 void I_ReportRemoteExit(const char *playername, INT32 node, boolean timedout,
 	UINT32 ping_tics);
+#endif
+
+#ifdef HAVE_SDL
+/** Hand off a selected server to a fresh client after saving this session. */
+boolean I_RestartForServer(const char *address);
+void I_WaitForRestart(void);
 #endif
 
 /** Launch and manage a hidden local dedicated-server companion process. */
