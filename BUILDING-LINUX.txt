@@ -1,7 +1,11 @@
-Dylan's Optimized SRB2 Build V5.150 - Linux source
+Dylan's Optimized SRB2 Build V1.6.0 for Linux
 
-Install a C compiler, make, pkg-config, and development packages for SDL2, SDL2_mixer, libpng, zlib, curl, and miniupnpc. Run sh ./build-native-linux.sh. Output is bin-linux-v5150-native. For GME and OpenMPT music decoders, install their development packages and run sh ./build-native-linux.sh --full-music. Supply official SRB2 2.2.15 data separately.
+Install a C compiler, make, pkg-config, and development packages for SDL2,
+SDL2_mixer, libpng, zlib, curl, and miniupnpc. Run sh ./build-native-linux.sh.
+The executable is built in bin-linux-v160-native. To include GME and OpenMPT
+decoders, install their development packages and run the script with
+--full-music. Supply the official SRB2 2.2.15 game data separately.
 
-The distributed x86_64 executable was cross-compiled on Windows and uses glibc 2.17 as its engine baseline. It requires distribution-provided SDL2 2.0.18+ and the OpenSSL ABI of libcurl.so.4; SDL2_mixer is bundled. Libraries from your distribution may need a newer glibc. Native Linux graphics/controller gameplay was not tested here. The cross build has GME/OpenMPT disabled, matching V5.147.
-
-The src directory is the actual Linux engine used for this build, with a small Linux crash-context stub. It contains the V5.150 portal/shield fix and the latest shared music fixes. This package is separate from Windows and Android source. Cross-build verification reports and release notes are kept in Archive, outside the client and source packages.
+The distributed x86_64 executable targets glibc 2.17 and uses SDL2 2.0.18 or
+newer and the OpenSSL build of libcurl.so.4 from the host system. The release
+bundles SDL2_mixer. Host libraries can require a newer glibc.
